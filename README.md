@@ -1,6 +1,6 @@
 # Convert-FolderToGitRepo
 
-A script to convert ancient folder(s) into a git repo.
+A script to convert ancient folder(s) into git repo(s).
 
 It is especially useful for converting old folders (possibly decade(s) old) into git repos, committing the files in chronological order they were created / modified (i.e. (using modified dates of files). That way, file metadata, especially date modified, is preserved in the `git log`. Optionally, allows specifying an override `git author`.
 
