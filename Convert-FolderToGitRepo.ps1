@@ -39,7 +39,7 @@ function Convert-FolderToGitRepo {
         $groups = Get-childitem . -Recurse -File | sort-object -property lastwritetime | Group-Object LastWriteTime #-descending | select -first 1 | select -expandproperty lastwritetime
         $groups | Out-String | Write-Host
 
-        "[Commands]"
+        "[Commands]" | Write-Host -ForegroundColor Cyan
         Execute-Command -Command "git init" -DryRun $CONFIG['dryrun']
         foreach ($group in $groups) {
             foreach ($file in $group.Group) {
