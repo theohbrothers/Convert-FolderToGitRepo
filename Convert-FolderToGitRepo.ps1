@@ -1,16 +1,10 @@
-# A simple script to convert folders to a git repo quickly.
-# Gathers all modified dates of descending files of a folder. Starting from the earliest modified date:
-# - Does `git init`
-# - Does `git add` each file matching the modified date
-# - Does `git commit -m '[$date] Add files --date $date --author <optional author>`
-
 # Edit script settings
 $CONFIG = @{
     # 1 to do a dry run (i.e. simulate a run)
     # 0 to actually run
     dryrun = 1
 
-    # Specify folders to convert to repos, one per line. Be sure to double-quote each path
+    # Specify folder(s) to convert to repos, one per line. Be sure to double-quote each path
     # It is suggested to convert one repo at a time.
     repos = @(
         # Windows
