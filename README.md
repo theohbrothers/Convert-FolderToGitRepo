@@ -2,11 +2,11 @@
 
 A script to convert ancient folder(s) into a git repo.
 
-It is especially useful for converting old folders (possibly decade(s) old) into git repos, committing the files in chronological order they were created / modified (i.e. (using modified dates of files). That way, file metadata, especially date modified, is preserved in the `git log`. Optionally, allows specying an override `git author`.
+It is especially useful for converting old folders (possibly decade(s) old) into git repos, committing the files in chronological order they were created / modified (i.e. (using modified dates of files). That way, file metadata, especially date modified, is preserved in the `git log`. Optionally, allows specifying an override `git author`.
 
 ## How it works
 
-Gathers all modified dates of descending files of a folder. Starting from the earliest modified date:
+Gathers all modified dates of descending files of a given folder. Starting from the earliest modified date:
 
 - Does `git init`
 - Does `git add` each file matching the modified date
