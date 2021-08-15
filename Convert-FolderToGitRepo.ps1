@@ -22,11 +22,15 @@ $CONFIG = @{
     # author = 'John Doe <johndoe@example.com>'
 }
 
-function Execute-Command ($Command, $DryRun)  {
+function Execute-Command ([string]$Command, [array]$ArgumentList, [string]$WorkingDirectory, [bool]$DryRun)  {
     if ($Command) {
-        "Will execute: $Command" | Write-Host -ForegroundColor Yellow
+        "Will execute: $Command $ArgumentList" | Write-Host -ForegroundColor Green
         if (!$DryRun) {
-            Invoke-Expression $Command
+            # Start-Process requires that each item in the -ArgumentList must be double-quoted if there are spaces, or else they be treated as individual arguments. See: https://github.com/PowerShell/PowerShell/issues/5576
+            $process = Start-Process -NoNewWindow -Wait -WorkingDirectory $WorkingDirectory -FilePath $Command -ArgumentList $ArgumentList -PassThru # Use -FilePath echoargs to test
+            if ($process.ExitCode -gt 0) {
+                Write-Error "There was an error."
+            }
         }
     }
 }
@@ -40,20 +44,22 @@ function Convert-FolderToGitRepo {
         $groups | Out-String | Write-Host
 
         "[Commands]" | Write-Host -ForegroundColor Cyan
-        Execute-Command -Command "git init" -DryRun $CONFIG['dryrun']
+        $args = @( 'init' )
+        Execute-Command -Command 'git' -ArgumentList $args -WorkingDirectory $repo -DryRun $CONFIG['dryrun']
         foreach ($group in $groups) {
             foreach ($file in $group.Group) {
-                Execute-Command -Command "git add '$file'" -DryRun $CONFIG['dryrun']
+                $args = @( "add", "`"$( $file.FullName )`"" )
+                Execute-Command -Command 'git' -ArgumentList $args -WorkingDirectory $repo -DryRun $CONFIG['dryrun']
             }
             if ($date = $file.lastwritetime.ToUniversalTime()) {
                 $isoDate = $date.tostring('yyyy-MM-dd HH:mm:ss zz00')
                 $gitDate = $date.tostring('ddd MMM d HH:mm:ss yyyy zz00')
 
-                $cmd = "git commit -m '[$isoDate] Add files' --date '$gitdate'"
+                $args = @( "commit", "-m", "`"[$isoDate] Add files`"", "--date", "`"$gitDate`"" )
                 if ($CONFIG['author']) {
-                    $cmd += " --author '$( $CONFIG['author'] )'"
+                    $args += @( "--author", $CONFIG['author'] )
                 }
-                Execute-Command -Command $cmd -DryRun $CONFIG['dryrun']
+                Execute-Command -Command 'git' -ArgumentList $args -WorkingDirectory $repo -DryRun $CONFIG['dryrun']
             }
         }
 
