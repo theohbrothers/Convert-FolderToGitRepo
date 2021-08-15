@@ -43,7 +43,7 @@ function Convert-FolderToGitRepo {
         Execute-Command -Command "git init" -DryRun $CONFIG['dryrun']
         foreach ($group in $groups) {
             foreach ($file in $group.Group) {
-                Execute-Command -Command "git add '$file'" -DryRun $CONFIG['dryrun']
+                Execute-Command -Command "git add '$( $file.FullName )'" -DryRun $CONFIG['dryrun']
             }
             if ($date = $file.lastwritetime.ToUniversalTime()) {
                 $isoDate = $date.tostring('yyyy-MM-dd HH:mm:ss zz00')
