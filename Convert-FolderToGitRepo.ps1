@@ -36,7 +36,7 @@ function Convert-FolderToGitRepo {
         "[Repo]" | Write-Host -ForegroundColor Cyan
         "Repo: $repo" | Write-Host
         Push-Location "$repo" -ErrorAction Stop
-        $groups = Get-childitem . -Recurse -File | sort-object -property lastwritetime | Group-Object LastWriteTime #-descending | select -first 1 | select -expandproperty lastwritetime
+        $groups = Get-ChildItem . -Recurse -File -Force | Sort-Object -Property LastWriteTime | Group-Object LastWriteTime #-Descending | Select-Object -first 1 | Select-Object -Expandproperty LastWriteTime
         $groups | Out-String | Write-Host
 
         "[Commands]" | Write-Host -ForegroundColor Cyan
@@ -45,7 +45,7 @@ function Convert-FolderToGitRepo {
             foreach ($file in $group.Group) {
                 Execute-Command -Command "git add '$( $file.FullName )'" -DryRun $CONFIG['dryrun']
             }
-            if ($date = $file.lastwritetime.ToUniversalTime()) {
+            if ($date = $file.LastWriteTime.ToUniversalTime()) {
                 $isoDate = $date.tostring('yyyy-MM-dd HH:mm:ss zz00')
                 $gitDate = $date.tostring('ddd MMM d HH:mm:ss yyyy zz00')
 
